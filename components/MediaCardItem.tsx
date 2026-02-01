@@ -6,7 +6,7 @@ import { MediaCard, CardType } from '../types';
 interface MediaCardItemProps {
   card: MediaCard;
   canManage: boolean;
-  onUnlock: () => boolean;
+  onUnlock: () => boolean | Promise<boolean>;
   isHostMode: boolean;
   onDelete?: (id: string) => void;
   onEdit?: (card: MediaCard) => void;
@@ -62,10 +62,10 @@ const MediaCardItem: React.FC<MediaCardItemProps> = ({ card, canManage, onUnlock
       if (canManage) setIsUnlocked(true);
   }, [canManage]);
 
-  const handleInteraction = () => {
+  const handleInteraction = async () => {
     if (expiresIn === 0) return;
     if (card.type === CardType.CHAT) {
-        onUnlock(); 
+        await onUnlock(); 
         return;
     }
     if (isUnlocked) {
@@ -77,7 +77,12 @@ const MediaCardItem: React.FC<MediaCardItemProps> = ({ card, canManage, onUnlock
       }
       return;
     }
-    if (onUnlock()) {
+    
+    // Handle potential promise from onUnlock
+    const result = onUnlock();
+    const success = result instanceof Promise ? await result : result;
+
+    if (success) {
       setIsUnlocked(true);
       if (card.type === CardType.AUDIO_CALL || card.type === CardType.VIDEO_CALL) setCallStatus('requesting');
       else setShowSession(true);
@@ -86,7 +91,8 @@ const MediaCardItem: React.FC<MediaCardItemProps> = ({ card, canManage, onUnlock
 
   const handleCopyLink = (e: React.MouseEvent) => {
       e.stopPropagation();
-      const link = `${window.location.origin}/#/chat/priv-${card.id}`;
+      const baseUrl = window.location.origin + window.location.pathname;
+      const link = `${baseUrl}#/chat/priv-${card.id}`;
       navigator.clipboard.writeText(link);
       alert("Link da sala privada copiado!");
   };
@@ -212,8 +218,6 @@ const MediaCardItem: React.FC<MediaCardItemProps> = ({ card, canManage, onUnlock
           </div>
       );
   };
-
-  // ... (Layout code is mostly same, just ensuring CreatorControls is placed) ...
 
   // === RENDERIZAÇÃO DO MODO MINIMALISTA ===
   if (card.layoutStyle === 'minimal') {

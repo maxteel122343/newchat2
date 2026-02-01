@@ -10,6 +10,7 @@ export enum CardType {
 
 export interface MediaCard {
   id: string;
+  creator_id?: string; // Added field to fix build error
   type: CardType;
   title: string;
   description: string;
@@ -29,7 +30,7 @@ export interface MediaCard {
   createdAt: number;
   defaultWidth?: number; 
   layoutStyle?: 'classic' | 'minimal';
-  cardColor?: string; // Novo: Cor do card
+  cardColor?: string;
 }
 
 export interface CardDefaults {
@@ -45,7 +46,7 @@ export interface CardDefaults {
   defaultWidth: number;
   repeatInterval: number;
   category: string;
-  cardColor: string; // Novo: Cor padrão
+  cardColor: string;
 }
 
 export interface ChatSession {
@@ -69,7 +70,7 @@ export interface User {
   id: string;
   name: string;
   credits: number;
-  earnings: number; // Novo: Créditos ganhos
+  earnings: number;
   isLoggedIn: boolean;
   isHost?: boolean;
   profilePhoto?: string;
