@@ -1,0 +1,8 @@
+{
+  "name": "1436 01 02 26 Linkchat  OFICIAL ",
+  "description": "A shareable instant chat platform where hosts create interactive media cards (video, audio, calls) that cost credits and feature self-destruct timers and glassmorphism effects.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
